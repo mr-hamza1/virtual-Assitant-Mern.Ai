@@ -1,7 +1,8 @@
 import { TryCatch } from "../middlewares/error.js";
 import User from "../models/user.js";
 import bcrypt from "bcryptjs"
-
+import { cookieOptions, sendToken } from "../utils/feature.js";
+import {ErrorHandler} from "../utils/errorHandler.js"
 
 const signUp = TryCatch(async (req, res, next) => {
 
@@ -34,11 +35,47 @@ const signUp = TryCatch(async (req, res, next) => {
     password: hashedPassword, 
   });
      
-     console.log(user)
-
-
-    //  sendToken(res, user, 201, `Successfully Signup ${user.name}!`);
+     sendToken(res, user, 201, `Successfully Signup ${user.name}!`);
 })
 
-export {signUp};
+
+const logIn = TryCatch(async (req, res, next) => {
+
+  const { email, password } = req.body;
+
+  if (!email)
+    return next(new ErrorHandler("Please enter email", 400));
+
+  if (!password)
+    return next(new ErrorHandler("Please enter password", 400));
+
+
+  const user = await User.findOne({ email }).select("+password")
+
+  if (!user) {
+    return next(new ErrorHandler("You are not SignUp", 404));
+  }
+
+    const isMatch = await bcrypt.compare(password, user.password)
+
+  if (!isMatch) { 
+    return  next(new ErrorHandler("Invalid  password",404))
+  }
+
+  sendToken(res, user, 200, `Welcome Back ${user.name}`);
+});
+
+const logOut = TryCatch(async (req, res) => {
+
+  console.log("logout!")
+
+  return  res.clearCookie("Bat-Virtual-Assistant", {...cookieOptions, maxAge: 0}).json({
+      success: true,
+      message: "Logout successfully!",
+    });
+});
+
+
+
+export {signUp, logIn, logOut};
 
