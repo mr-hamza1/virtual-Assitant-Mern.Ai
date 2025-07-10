@@ -1,5 +1,8 @@
 import express from "express";
+import { signUp } from "../controllers/user.js";
 
-const app = express();
+const app = express.Router();
 
-app.post("/signUp",)
+app.post("/signUp", signUp)
+
+export default app;
