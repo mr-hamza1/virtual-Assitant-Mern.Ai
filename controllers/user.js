@@ -42,8 +42,10 @@ const logIn = TryCatch(async (req, res, next) => {
 
   const { email, password } = req.body;
 
+  
   if (!email)
     return next(new ErrorHandler("Please enter email", 400));
+
 
   if (!password)
     return next(new ErrorHandler("Please enter password", 400));
