@@ -4,6 +4,8 @@ import { connectDb } from "./utils/feature.js";
 import userRoutes from "./routes/user.js"
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
+import cors from "cors"
+import { errorMiddleware } from "./middlewares/error.js";
 
 dotenv.config()
 
@@ -13,6 +15,14 @@ const mongoURI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017";
 
 connectDb(mongoURI)
 
+const corsOptions ={              
+    origin: [process.env.CLIENT_URL],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+}
+
+app.use(cors(corsOptions))
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -20,8 +30,10 @@ app.use(morgan("dev"));
 
 app.use("/api/v1/user", userRoutes)
 
+app.use(errorMiddleware)
+
 app.listen(port, ()=>{
-    console.log(`server run on port ${port}`)
+    console.log(`server listen on port ${port}`)
 })
 
 app.get("/",(req, res)=>{

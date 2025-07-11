@@ -6,9 +6,9 @@ import {ErrorHandler} from "../utils/errorHandler.js"
 
 const signUp = TryCatch(async (req, res, next) => {
 
-  const { name, email, gender, password } = req.body;
+  const { name, email, password } = req.body;
 
-  if (!name || !email || !gender || !password) {
+  if (!name || !email || !password) {
     return next(new ErrorHandler("Please add all fields", 400));
   }
 
@@ -31,7 +31,6 @@ const signUp = TryCatch(async (req, res, next) => {
   user = await User.create({
     name,
     email,
-    gender,
     password: hashedPassword, 
   });
      
