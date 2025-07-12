@@ -5,6 +5,7 @@ import userRoutes from "./routes/user.js"
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import cors from "cors"
+import { v2 as cloudinary } from 'cloudinary';
 import { errorMiddleware } from "./middlewares/error.js";
 
 dotenv.config()
@@ -12,6 +13,12 @@ dotenv.config()
 const app = express();
 const port = process.env.PORT;
 const mongoURI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017";
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 connectDb(mongoURI)
 

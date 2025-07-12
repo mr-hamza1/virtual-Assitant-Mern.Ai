@@ -76,7 +76,21 @@ const logOut = TryCatch(async (req, res) => {
     });
 });
 
+const myProfile = TryCatch(async (req, res, next) => {
+
+  const user = await User.findById(req.user);
+
+  if (!user) {
+    return next(new ErrorHandler("user not found",404))
+  }
+
+  res.status(200).json({
+    success: true,
+    user,
+  })
+});
 
 
-export {signUp, logIn, logOut};
+
+export {signUp, logIn, logOut, myProfile};
 

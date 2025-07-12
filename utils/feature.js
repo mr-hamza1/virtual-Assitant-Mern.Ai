@@ -26,4 +26,21 @@ const sendToken = (res, user, code, message)=>{
 
 }
 
-export {connectDb, sendToken, cookieOptions};
+const uploadFileToCloudinary = async (file) => {
+    try {
+        const result = await cloudinary.uploader.upload(
+            getBase64(file),
+            { resource_type: "auto" }
+        );
+
+        return {
+            url: result.secure_url,
+            image_id: result.public_id,
+        };
+
+    } catch (error) {
+        throw new Error("Failed to upload file to Cloudinary: " + error.message);
+    }
+};
+
+export {connectDb, sendToken, cookieOptions, uploadFileToCloudinary};
