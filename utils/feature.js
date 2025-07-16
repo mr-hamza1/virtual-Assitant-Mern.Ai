@@ -1,5 +1,8 @@
 import mongoose from "mongoose"
 import jwt from "jsonwebtoken"
+import { v2 as cloudinary } from 'cloudinary';
+import fs from "fs"
+
 
 const cookieOptions = {
     maxAge: 15 * 24 * 60 * 60 * 1000,
@@ -25,6 +28,8 @@ const sendToken = (res, user, code, message)=>{
     })
 
 }
+ const getBase64 = (file) => `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
+
 
 const uploadFileToCloudinary = async (file) => {
     try {
@@ -33,10 +38,7 @@ const uploadFileToCloudinary = async (file) => {
             { resource_type: "auto" }
         );
 
-        return {
-            url: result.secure_url,
-            image_id: result.public_id,
-        };
+        return   result.secure_url;
 
     } catch (error) {
         throw new Error("Failed to upload file to Cloudinary: " + error.message);
